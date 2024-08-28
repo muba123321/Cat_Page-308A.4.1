@@ -23,7 +23,8 @@ rad.json
 TestResults.xml
 *.styles.css
 *.css
-*.styles.*
+*./styles.*
+.css
 
 
 
