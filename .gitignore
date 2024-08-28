@@ -21,6 +21,7 @@ rad.json
 *.css
 #Test results file
 TestResults.xml
+styles.css
 
 
 
