@@ -18,10 +18,11 @@ rad.json
 *.g.xlf
 #License-file
 *.flf
-*.css
+
 #Test results file
 TestResults.xml
-styles.css
+*.styles.css
+*.css
 
 
 
