@@ -14,6 +14,9 @@ const getFavouritesBtn = document.getElementById("getFavouritesBtn");
 const API_KEY =
   "live_d4ardeTARUwUI0RKDZwqVPI3WsT4Qnp1clzN5ro91mtSfugd3ti6xXqmPXsUl6cF";
 
+// This is made to store the breedId when we fetch data
+let breedId = null;
+
 /**
  * 1. Create an async function "initialLoad" that does the following:
  * - Retrieve a list of breeds from the cat API using fetch().
@@ -22,7 +25,6 @@ const API_KEY =
  *  - Each option should display text equal to the name of the breed.
  * This function should execute immediately.
  */
-
 
 /**
  * 2. Create an event handler for breedSelect that does the following:
@@ -51,12 +53,6 @@ const API_KEY =
  *   by setting a default header with your API key so that you do not have to
  *   send it manually with all of your requests! You can also set a default base URL!
  */
-/**
- * 5. Add axios interceptors to log the time between request and response to the console.
- * - Hint: you already have access to code that does this!
- * - Add a console.log statement to indicate when requests begin.
- * - As an added challenge, try to do this on your own without referencing the lesson material.
- */
 
 async function initialLoad() {
   try {
@@ -79,16 +75,20 @@ async function initialLoad() {
 initialLoad();
 
 breedSelect.addEventListener("change", async function () {
-  const breedId = breedSelect.value;
+  breedId = breedSelect.value;
+  console.log(typeof breedId);
   try {
     const res = await axios.get(
-      `https://api.thecatapi.com/v1/images/search?breed_id=${breedId}&api_key=${API_KEY}&limit=17`
+      `https://api.thecatapi.com/v1/images/search?breed_id=${breedId}&api_key=${API_KEY}&limit=17`,
+      {
+        onDownloadProgress: updateProgress,
+      }
     );
 
     const images = res.data;
 
     // Clear existing carousel items and infoDump content
-    Carousel.clear(); // Assuming you have a clear 
+    Carousel.clear(); // Assuming you have a clear
 
     images.forEach((image) => {
       const carouselElement = Carousel.createCarouselItem(
@@ -115,6 +115,13 @@ breedSelect.addEventListener("change", async function () {
 });
 
 /**
+ * 5. Add axios interceptors to log the time between request and response to the console.
+ * - Hint: you already have access to code that does this!
+ * - Add a console.log statement to indicate when requests begin.
+ * - As an added challenge, try to do this on your own without referencing the lesson material.
+ */
+
+/**
  * 6. Next, we'll create a progress bar to indicate the request is in progress.
  * - The progressBar element has already been created for you.
  *  - You need only to modify its "width" style property to align with the request progress.
@@ -135,6 +142,61 @@ breedSelect.addEventListener("change", async function () {
  * - In your request interceptor, set the body element's cursor style to "progress."
  * - In your response interceptor, remove the progress cursor style from the body element.
  */
+axios.interceptors.request.use(
+  (config) => {
+    config.metadata = { startTime: new Date().getTime() };
+    console.log(config.timeout);
+    console.log(config.metadata.startTime);
+    console.log(
+      "Request started at:",
+      new Date(config.metadata.startTime).toLocaleString()
+    );
+
+    document.body.style.cursor = "progress";
+    progressBar.style.width = "0%";
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Response Interceptor
+axios.interceptors.response.use(
+  (response) => {
+    console.log(response);
+    const endTime = new Date().getTime();
+
+    const duration = endTime - response.config.metadata.startTime;
+
+    console.log(`Request completed in ${duration} ms`);
+    console.log("Request ended at:", new Date(endTime).toLocaleString());
+
+    document.body.style.cursor = "default";
+    progressBar.style.width = "100%";
+    return response;
+  },
+  (error) => {
+    document.body.style.cursor = "default";
+    progressBar.style.width = "0%";
+    return Promise.reject(error);
+  }
+);
+
+function updateProgress(progressEvent) {
+  console.log(progressEvent);
+  const total = progressEvent.total;
+  const current = progressEvent.loaded;
+  console.log(total);
+  console.log(current);
+
+  // Percentage calculation of progressEvent
+  const percentCompleted = Math.round((current / total) * 100);
+
+  // Progress bar updated according to the progressEvent in percentage
+  progressBar.style.width = `${percentCompleted}%`;
+}
+
 /**
  * 8. To practice posting data, we'll create a system to "favourite" certain images.
  * - The skeleton of this function has already been created for you.
@@ -147,7 +209,58 @@ breedSelect.addEventListener("change", async function () {
  * - You can call this function by clicking on the heart at the top right of any image.
  */
 export async function favourite(imgId) {
-  // your code here
+  console.log("this is the iddddd " + imgId);
+  try {
+    // we try to get all the favourites data if any exist in the database so we can compare the imgId and that id is same or exist then we delete if not we make a post request to make it a favourite.
+    const getFavourite = await axios.get(
+      `https://api.thecatapi.com/v1/favourites`,
+      {
+        headers: {
+          "x-api-key": API_KEY,
+        },
+      }
+    );
+    console.log(getFavourite.data);
+
+    const favouriteExist = getFavourite.data.some(
+      (favourite) => favourite.image_id === imgId
+    );
+
+    console.log(favouriteExist);
+
+    if (favouriteExist) {
+      // if the favourite exist then we delete it from the database
+      const idToDelete = getFavourite.data.find(
+        (favourite) => favourite.image_id === imgId
+      ).id;
+      const deleteFavourite = await axios.delete(
+        `https://api.thecatapi.com/v1/favourites/${idToDelete}`,
+        {
+          headers: {
+            "x-api-key": API_KEY,
+          },
+        }
+      );
+      console.log('///////////////');
+      console.log('Favourite deleted:', deleteFavourite.data);
+      console.log('...............');
+    } else {
+      // if the favourite does not exist then we make a post request to make it a favourite.
+    const response = await axios.post('https://api.thecatapi.com/v1/favourites', {
+      image_id: imgId,
+    }, {
+      headers: {
+        'x-api-key': API_KEY,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    console.log('Favourite created:', response.data);
+    return response.data;
+    }
+  } catch (error) {
+    console.error("Error creating favourite:", error);
+  }
 }
 
 /**
