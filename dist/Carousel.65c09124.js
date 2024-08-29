@@ -12877,48 +12877,6 @@ var API_KEY = "live_d4ardeTARUwUI0RKDZwqVPI3WsT4Qnp1clzN5ro91mtSfugd3ti6xXqmPXsU
  *  - Each option should display text equal to the name of the breed.
  * This function should execute immediately.
  */
-function initialLoad() {
-  return _initialLoad.apply(this, arguments);
-}
-function _initialLoad() {
-  _initialLoad = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-    var res, breeds;
-    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-      while (1) switch (_context2.prev = _context2.next) {
-        case 0:
-          _context2.prev = 0;
-          _context2.next = 3;
-          return fetch("https://api.thecatapi.com/v1/breeds");
-        case 3:
-          res = _context2.sent;
-          _context2.next = 6;
-          return res.json();
-        case 6:
-          breeds = _context2.sent;
-          breeds.forEach(function (breed) {
-            // console.log(breed);
-            var option = document.createElement("option");
-            option.value = breed.id;
-            // console.log(breed.id);
-            option.textContent = breed.name;
-            // console.log(breed.name);
-            breedSelect.appendChild(option);
-          });
-          _context2.next = 13;
-          break;
-        case 10:
-          _context2.prev = 10;
-          _context2.t0 = _context2["catch"](0);
-          console.error("this is my ".concat(_context2.t0));
-        case 13:
-        case "end":
-          return _context2.stop();
-      }
-    }, _callee2, null, [[0, 10]]);
-  }));
-  return _initialLoad.apply(this, arguments);
-}
-initialLoad();
 
 /**
  * 2. Create an event handler for breedSelect that does the following:
@@ -12934,51 +12892,6 @@ initialLoad();
  * - Each new selection should clear, re-populate, and restart the Carousel.
  * - Add a call to this function to the end of your initialLoad function above to create the initial carousel.
  */
-
-breedSelect.addEventListener("change", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-  var breedId, _images$, res, images, breedInfo;
-  return _regeneratorRuntime().wrap(function _callee$(_context) {
-    while (1) switch (_context.prev = _context.next) {
-      case 0:
-        breedId = breedSelect.value;
-        console.log(breedId);
-        _context.prev = 2;
-        _context.next = 5;
-        return fetch("https://api.thecatapi.com/v1/images/search?breed_id=".concat(breedId, "&api_key=").concat(API_KEY, "&limit=17") // {
-        //   headers: { "x-api-key": API_KEY },
-        // }
-        );
-      case 5:
-        res = _context.sent;
-        _context.next = 8;
-        return res.json();
-      case 8:
-        images = _context.sent;
-        console.log(images);
-        Carousel.clear();
-        images.forEach(function (image) {
-          var _image$breeds$;
-          var carouselElement = Carousel.createCarouselItem(image.url, ((_image$breeds$ = image.breeds[0]) === null || _image$breeds$ === void 0 ? void 0 : _image$breeds$.name) || "Cat Image", image.id);
-          Carousel.appendCarousel(carouselElement);
-        });
-        Carousel.start();
-        breedInfo = (_images$ = images[0]) === null || _images$ === void 0 ? void 0 : _images$.breeds[0];
-        console.log("sddsds " + breedInfo);
-        if (breedInfo) {
-          infoDump.innerHTML = "<h2>".concat(breedInfo.name, "</h2>\n        <p>").concat(breedInfo.description, "</p>\n        <p><strong>Origin:</strong> ").concat(breedInfo.origin, "</p>\n        <p><strong>Temperament:</strong> ").concat(breedInfo.temperament, "</p>\n      ");
-        }
-        _context.next = 21;
-        break;
-      case 18:
-        _context.prev = 18;
-        _context.t0 = _context["catch"](2);
-        console.log("this is my ".concat(_context.t0.message));
-      case 21:
-      case "end":
-        return _context.stop();
-    }
-  }, _callee, null, [[2, 18]]);
-})));
 
 /**
  * 3. Fork your own sandbox, creating a new one named "JavaScript Axios Lab."
@@ -12998,6 +12911,79 @@ breedSelect.addEventListener("change", /*#__PURE__*/_asyncToGenerator( /*#__PURE
  * - Add a console.log statement to indicate when requests begin.
  * - As an added challenge, try to do this on your own without referencing the lesson material.
  */
+function initialLoad() {
+  return _initialLoad.apply(this, arguments);
+} // Call the initial load function immediately
+function _initialLoad() {
+  _initialLoad = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+    var res, breeds;
+    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+      while (1) switch (_context2.prev = _context2.next) {
+        case 0:
+          _context2.prev = 0;
+          _context2.next = 3;
+          return _axios.default.get("https://api.thecatapi.com/v1/breeds");
+        case 3:
+          res = _context2.sent;
+          breeds = res.data;
+          breeds.forEach(function (breed) {
+            var option = document.createElement("option");
+            option.value = breed.id;
+            option.textContent = breed.name;
+            breedSelect.appendChild(option);
+          });
+          _context2.next = 11;
+          break;
+        case 8:
+          _context2.prev = 8;
+          _context2.t0 = _context2["catch"](0);
+          console.error("Error loading breeds:", _context2.t0);
+        case 11:
+        case "end":
+          return _context2.stop();
+      }
+    }, _callee2, null, [[0, 8]]);
+  }));
+  return _initialLoad.apply(this, arguments);
+}
+initialLoad();
+breedSelect.addEventListener("change", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+  var breedId, _images$, res, images, breedInfo;
+  return _regeneratorRuntime().wrap(function _callee$(_context) {
+    while (1) switch (_context.prev = _context.next) {
+      case 0:
+        breedId = breedSelect.value;
+        _context.prev = 1;
+        _context.next = 4;
+        return _axios.default.get("https://api.thecatapi.com/v1/images/search?breed_id=".concat(breedId, "&api_key=").concat(API_KEY, "&limit=17"));
+      case 4:
+        res = _context.sent;
+        images = res.data; // Clear existing carousel items and infoDump content
+        Carousel.clear(); // Assuming you have a clear 
+
+        images.forEach(function (image) {
+          var _image$breeds$;
+          var carouselElement = Carousel.createCarouselItem(image.url, ((_image$breeds$ = image.breeds[0]) === null || _image$breeds$ === void 0 ? void 0 : _image$breeds$.name) || "Cat Image", image.id);
+          Carousel.appendCarousel(carouselElement);
+        });
+        Carousel.start();
+        // Populating the infoDump with breed details
+        breedInfo = (_images$ = images[0]) === null || _images$ === void 0 ? void 0 : _images$.breeds[0];
+        if (breedInfo) {
+          infoDump.innerHTML = "<h2>".concat(breedInfo.name, "</h2>\n     <p>").concat(breedInfo.description, "</p>\n     <p><strong>Origin:</strong> ").concat(breedInfo.origin, "</p>\n     <p><strong>Temperament:</strong> ").concat(breedInfo.temperament, "</p>\n   ");
+        }
+        _context.next = 16;
+        break;
+      case 13:
+        _context.prev = 13;
+        _context.t0 = _context["catch"](1);
+        console.error("Error fetching breed images:", _context.t0);
+      case 16:
+      case "end":
+        return _context.stop();
+    }
+  }, _callee, null, [[1, 13]]);
+})));
 
 /**
  * 6. Next, we'll create a progress bar to indicate the request is in progress.

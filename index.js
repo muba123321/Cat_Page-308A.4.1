@@ -23,26 +23,6 @@ const API_KEY =
  * This function should execute immediately.
  */
 
-async function initialLoad() {
-  try {
-    const res = await fetch("https://api.thecatapi.com/v1/breeds");
-
-    const breeds = await res.json();
-    breeds.forEach((breed) => {
-      // console.log(breed);
-      const option = document.createElement("option");
-      option.value = breed.id;
-      // console.log(breed.id);
-      option.textContent = breed.name;
-      // console.log(breed.name);
-      breedSelect.appendChild(option);
-    });
-  } catch (error) {
-    console.error(`this is my ${error}`);
-  }
-}
-
-initialLoad();
 
 /**
  * 2. Create an event handler for breedSelect that does the following:
@@ -58,47 +38,6 @@ initialLoad();
  * - Each new selection should clear, re-populate, and restart the Carousel.
  * - Add a call to this function to the end of your initialLoad function above to create the initial carousel.
  */
-
-breedSelect.addEventListener("change", async function () {
-  const breedId = breedSelect.value;
-  console.log(breedId);
-  try {
-    const res = await fetch(
-      `https://api.thecatapi.com/v1/images/search?breed_id=${breedId}&api_key=${API_KEY}&limit=17`,
-      // {
-      //   headers: { "x-api-key": API_KEY },
-      // }
-    );
-    const images = await res.json();
-    console.log(images);
-
-    Carousel.clear();
-
-    images.forEach((image) => {
-      const carouselElement = Carousel.createCarouselItem(
-        image.url,
-        image.breeds[0]?.name || "Cat Image",
-        image.id
-      );
-      Carousel.appendCarousel(carouselElement);
-    });
-    Carousel.start();
-
-    const breedInfo = images[0]?.breeds[0];
-    console.log("sddsds " + breedInfo);
-    if (breedInfo){
-
-      infoDump.innerHTML =
-      `<h2>${breedInfo.name}</h2>
-        <p>${breedInfo.description}</p>
-        <p><strong>Origin:</strong> ${breedInfo.origin}</p>
-        <p><strong>Temperament:</strong> ${breedInfo.temperament}</p>
-      `;
-    }
-  } catch (error) {
-    console.log(`this is my ${error.message}`);
-  }
-});
 
 /**
  * 3. Fork your own sandbox, creating a new one named "JavaScript Axios Lab."
@@ -118,6 +57,62 @@ breedSelect.addEventListener("change", async function () {
  * - Add a console.log statement to indicate when requests begin.
  * - As an added challenge, try to do this on your own without referencing the lesson material.
  */
+
+async function initialLoad() {
+  try {
+    const res = await axios.get("https://api.thecatapi.com/v1/breeds");
+
+    const breeds = res.data;
+
+    breeds.forEach((breed) => {
+      const option = document.createElement("option");
+      option.value = breed.id;
+      option.textContent = breed.name;
+      breedSelect.appendChild(option);
+    });
+  } catch (error) {
+    console.error("Error loading breeds:", error);
+  }
+}
+
+// Call the initial load function immediately
+initialLoad();
+
+breedSelect.addEventListener("change", async function () {
+  const breedId = breedSelect.value;
+  try {
+    const res = await axios.get(
+      `https://api.thecatapi.com/v1/images/search?breed_id=${breedId}&api_key=${API_KEY}&limit=17`
+    );
+
+    const images = res.data;
+
+    // Clear existing carousel items and infoDump content
+    Carousel.clear(); // Assuming you have a clear 
+
+    images.forEach((image) => {
+      const carouselElement = Carousel.createCarouselItem(
+        image.url,
+        image.breeds[0]?.name || "Cat Image",
+        image.id
+      );
+      Carousel.appendCarousel(carouselElement);
+    });
+    Carousel.start();
+    // Populating the infoDump with breed details
+    const breedInfo = images[0]?.breeds[0];
+
+    if (breedInfo) {
+      infoDump.innerHTML = `<h2>${breedInfo.name}</h2>
+     <p>${breedInfo.description}</p>
+     <p><strong>Origin:</strong> ${breedInfo.origin}</p>
+     <p><strong>Temperament:</strong> ${breedInfo.temperament}</p>
+   `;
+    }
+  } catch (error) {
+    console.error("Error fetching breed images:", error);
+  }
+});
 
 /**
  * 6. Next, we'll create a progress bar to indicate the request is in progress.
