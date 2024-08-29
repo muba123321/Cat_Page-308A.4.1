@@ -13013,11 +13013,10 @@ breedSelect.addEventListener("change", /*#__PURE__*/_asyncToGenerator( /*#__PURE
         console.log(breedId);
         _context.prev = 2;
         _context.next = 5;
-        return fetch("https://api.thecatapi.com/v1/images/search?breed_id=".concat(breedId, "&limit=5"), {
-          headers: {
-            "x-api-key": API_KEY
-          }
-        });
+        return fetch("https://api.thecatapi.com/v1/images/search?breed_id=".concat(breedId, "&api_key=").concat(API_KEY, "&limit=17") // {
+        //   headers: { "x-api-key": API_KEY },
+        // }
+        );
       case 5:
         res = _context.sent;
         _context.next = 8;
@@ -13163,7 +13162,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65396" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56781" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

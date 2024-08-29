@@ -64,10 +64,10 @@ breedSelect.addEventListener("change", async function () {
   console.log(breedId);
   try {
     const res = await fetch(
-      `https://api.thecatapi.com/v1/images/search?breed_id=${breedId}&limit=5`,
-      {
-        headers: { "x-api-key": API_KEY },
-      }
+      `https://api.thecatapi.com/v1/images/search?breed_id=${breedId}&api_key=${API_KEY}&limit=17`,
+      // {
+      //   headers: { "x-api-key": API_KEY },
+      // }
     );
     const images = await res.json();
     console.log(images);
@@ -77,7 +77,7 @@ breedSelect.addEventListener("change", async function () {
     images.forEach((image) => {
       const carouselElement = Carousel.createCarouselItem(
         image.url,
-         image.breeds[0]?.name || "Cat Image",
+        image.breeds[0]?.name || "Cat Image",
         image.id
       );
       Carousel.appendCarousel(carouselElement);
