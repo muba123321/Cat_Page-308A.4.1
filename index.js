@@ -251,7 +251,7 @@ export async function favourite(imgId) {
     }, {
       headers: {
         'x-api-key': API_KEY,
-        'Content-Type': 'application/json'
+       
       }
     });
 
@@ -273,6 +273,47 @@ export async function favourite(imgId) {
  *    repeat yourself in this section.
  */
 
+
+async function getFavourites() {
+  try {
+    // Fetch the list of favourites
+    const favouriteResponse = await axios.get('https://api.thecatapi.com/v1/favourites?limit=20&order=DESC', {
+      headers: {
+        'x-api-key': API_KEY,
+        "content-type":"application/json",
+      }
+    });
+    Carousel.clear();
+
+    const favouriteData = favouriteResponse.data;
+    console.log(favouriteData);
+
+    // clear carousel to make way for favourite 
+   
+
+    // Adding favourilte to carousel function 
+    favouriteData.forEach((favourite) => {
+      console.log(favourite.image.url);
+      console.log( favourite.image.id);
+      const favouriltecarouselElement = Carousel.createCarouselItem(
+        favourite.image.url,
+        "Cat Image",
+        favourite.image.id
+      );
+      Carousel.appendCarousel(favouriltecarouselElement);
+    });
+
+    // Restart the carousel
+    Carousel.start();
+  } catch (error) {
+    console.error('Error fetching favourites:', error.message);
+  }
+}
+
+//  getFavourites function is call in an addEvnetListner for the getfavourite button
+getFavouritesBtn.addEventListener('click', getFavourites);
+
+
 /**
  * 10. Test your site, thoroughly!
  * - What happens when you try to load the Malayan breed?
@@ -281,11 +322,4 @@ export async function favourite(imgId) {
  *   your code should account for this.
  */
 
-// async function initialLoad(){
-//   const res = await fetch ('https://api.thecatapi.com/v1/images/search')
 
-//   const data = await res.json()
-//   console.log(data);
-// }
-
-// initialLoad();

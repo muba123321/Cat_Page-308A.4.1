@@ -13148,19 +13148,6 @@ function favourite(_x) {
  *    If that isn't in its own function, maybe it should be so you don't have to
  *    repeat yourself in this section.
  */
-/**
- * 10. Test your site, thoroughly!
- * - What happens when you try to load the Malayan breed?
- *  - If this is working, good job! If not, look for the reason why and fix it!
- * - Test other breeds as well. Not every breed has the same data available, so
- *   your code should account for this.
- */
-// async function initialLoad(){
-//   const res = await fetch ('https://api.thecatapi.com/v1/images/search')
-//   const data = await res.json()
-//   console.log(data);
-// }
-// initialLoad();
 function _favourite() {
   _favourite = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(imgId) {
     var getFavourite, favouriteExist, idToDelete, deleteFavourite, response;
@@ -13209,8 +13196,7 @@ function _favourite() {
             image_id: imgId
           }, {
             headers: {
-              'x-api-key': API_KEY,
-              'Content-Type': 'application/json'
+              'x-api-key': API_KEY
             }
           });
         case 20:
@@ -13232,6 +13218,64 @@ function _favourite() {
   }));
   return _favourite.apply(this, arguments);
 }
+function getFavourites() {
+  return _getFavourites.apply(this, arguments);
+} //  getFavourites function is call in an addEvnetListner for the getfavourite button
+function _getFavourites() {
+  _getFavourites = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+    var favouriteResponse, favouriteData;
+    return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+      while (1) switch (_context4.prev = _context4.next) {
+        case 0:
+          _context4.prev = 0;
+          _context4.next = 3;
+          return _axios.default.get('https://api.thecatapi.com/v1/favourites?limit=20&order=DESC', {
+            headers: {
+              'x-api-key': API_KEY,
+              "content-type": "application/json"
+            }
+          });
+        case 3:
+          favouriteResponse = _context4.sent;
+          Carousel.clear();
+          favouriteData = favouriteResponse.data;
+          console.log(favouriteData);
+
+          // clear carousel to make way for favourite 
+
+          // Adding favourilte to carousel function 
+          favouriteData.forEach(function (favourite) {
+            console.log(favourite.image.url);
+            console.log(favourite.image.id);
+            var favouriltecarouselElement = Carousel.createCarouselItem(favourite.image.url, "Cat Image", favourite.image.id);
+            Carousel.appendCarousel(favouriltecarouselElement);
+          });
+
+          // Restart the carousel
+          Carousel.start();
+          _context4.next = 14;
+          break;
+        case 11:
+          _context4.prev = 11;
+          _context4.t0 = _context4["catch"](0);
+          console.error('Error fetching favourites:', _context4.t0.message);
+        case 14:
+        case "end":
+          return _context4.stop();
+      }
+    }, _callee4, null, [[0, 11]]);
+  }));
+  return _getFavourites.apply(this, arguments);
+}
+getFavouritesBtn.addEventListener('click', getFavourites);
+
+/**
+ * 10. Test your site, thoroughly!
+ * - What happens when you try to load the Malayan breed?
+ *  - If this is working, good job! If not, look for the reason why and fix it!
+ * - Test other breeds as well. Not every breed has the same data available, so
+ *   your code should account for this.
+ */
 },{"./Carousel.js":"Carousel.js","axios":"node_modules/axios/index.js"}],"../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -13257,7 +13301,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51333" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50165" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
