@@ -12979,7 +12979,7 @@ var breedId = null;
  */
 function initialLoad() {
   return _initialLoad.apply(this, arguments);
-} // Call the initial load function immediately
+} // Calling the initial load function
 function _initialLoad() {
   _initialLoad = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
     var res, breeds;
@@ -13028,14 +13028,14 @@ breedSelect.addEventListener("change", /*#__PURE__*/_asyncToGenerator( /*#__PURE
       case 5:
         res = _context.sent;
         images = res.data; // Clear existing carousel items and infoDump content
-        Carousel.clear(); // Assuming you have a clear
-
+        Carousel.clear();
         images.forEach(function (image) {
           var _image$breeds$;
           var carouselElement = Carousel.createCarouselItem(image.url, ((_image$breeds$ = image.breeds[0]) === null || _image$breeds$ === void 0 ? void 0 : _image$breeds$.name) || "Cat Image", image.id);
           Carousel.appendCarousel(carouselElement);
         });
         Carousel.start();
+
         // Populating the infoDump with breed details
         breedInfo = (_images$ = images[0]) === null || _images$ === void 0 ? void 0 : _images$.breeds[0];
         if (breedInfo) {
@@ -13082,6 +13082,8 @@ breedSelect.addEventListener("change", /*#__PURE__*/_asyncToGenerator( /*#__PURE
  * - In your request interceptor, set the body element's cursor style to "progress."
  * - In your response interceptor, remove the progress cursor style from the body element.
  */
+
+// request interceptors
 _axios.default.interceptors.request.use(function (config) {
   config.metadata = {
     startTime: new Date().getTime()
@@ -13237,11 +13239,10 @@ function _getFavourites() {
           });
         case 3:
           favouriteResponse = _context4.sent;
+          // clear carousel to make way for favourite 
           Carousel.clear();
           favouriteData = favouriteResponse.data;
           console.log(favouriteData);
-
-          // clear carousel to make way for favourite 
 
           // Adding favourilte to carousel function 
           favouriteData.forEach(function (favourite) {

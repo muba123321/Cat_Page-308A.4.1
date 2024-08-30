@@ -71,7 +71,7 @@ async function initialLoad() {
   }
 }
 
-// Call the initial load function immediately
+// Calling the initial load function
 initialLoad();
 
 breedSelect.addEventListener("change", async function () {
@@ -88,7 +88,7 @@ breedSelect.addEventListener("change", async function () {
     const images = res.data;
 
     // Clear existing carousel items and infoDump content
-    Carousel.clear(); // Assuming you have a clear
+    Carousel.clear(); 
 
     images.forEach((image) => {
       const carouselElement = Carousel.createCarouselItem(
@@ -99,6 +99,7 @@ breedSelect.addEventListener("change", async function () {
       Carousel.appendCarousel(carouselElement);
     });
     Carousel.start();
+
     // Populating the infoDump with breed details
     const breedInfo = images[0]?.breeds[0];
 
@@ -142,6 +143,8 @@ breedSelect.addEventListener("change", async function () {
  * - In your request interceptor, set the body element's cursor style to "progress."
  * - In your response interceptor, remove the progress cursor style from the body element.
  */
+
+// request interceptors
 axios.interceptors.request.use(
   (config) => {
     config.metadata = { startTime: new Date().getTime() };
@@ -283,12 +286,13 @@ async function getFavourites() {
         "content-type":"application/json",
       }
     });
+     // clear carousel to make way for favourite 
     Carousel.clear();
 
     const favouriteData = favouriteResponse.data;
     console.log(favouriteData);
 
-    // clear carousel to make way for favourite 
+   
    
 
     // Adding favourilte to carousel function 
